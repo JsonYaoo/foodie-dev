@@ -3,7 +3,9 @@ package com.imooc.controller;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.UserBO;
 import com.imooc.service.UserService;
+import com.imooc.utils.CookieUtils;
 import com.imooc.utils.IMOOCJSONResult;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.MD5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -77,10 +79,10 @@ public class PassportController {
         // 4. 实现注册
         Users userResult = userService.createUser(userBO);
 
-//        userResult = setNullProperty(userResult);
-//
-//        CookieUtils.setCookie(request, response, "user",
-//                JsonUtils.objectToJson(userResult), true);
+        userResult = setNullProperty(userResult);
+
+        CookieUtils.setCookie(request, response, "user",
+                JsonUtils.objectToJson(userResult), true);
 //
 //        // TODO 生成用户token，存入redis会话
 //        // TODO 同步购物车数据
@@ -111,11 +113,10 @@ public class PassportController {
             return IMOOCJSONResult.errorMsg("用户名或密码不正确");
         }
 
-//        userResult = setNullProperty(userResult);
-//
-//        CookieUtils.setCookie(request, response, "user",
-//                JsonUtils.objectToJson(userResult), true);
+        userResult = setNullProperty(userResult);
 
+        CookieUtils.setCookie(request, response, "user",
+                JsonUtils.objectToJson(userResult), true);
 
         // TODO 生成用户token，存入redis会话
         // TODO 同步购物车数据
