@@ -55,3 +55,9 @@ mapper:
   not-empty: false
   # 数据库方言MySQL
   identity: MYSQL
+# 分页插件配置
+pagehelper:
+  # 数据库方言MySQL
+  helperDialect: mysql
+  # 是否支持分页参数传递
+  supportMethodsArguments: true
