@@ -77,25 +77,25 @@ public class UserServiceImpl implements UserService {
 
         return user;
     }
-//
-//    @Transactional(propagation = Propagation.SUPPORTS)
-//    @Override
-//    public Users queryUserForLogin(String username, String password) {
-//
-////        try {
-////            Thread.sleep(2500);
-////        } catch (InterruptedException e) {
-////            e.printStackTrace();
-////        }
-//
-//        Example userExample = new Example(Users.class);
-//        Example.Criteria userCriteria = userExample.createCriteria();
-//
-//        userCriteria.andEqualTo("username", username);
-//        userCriteria.andEqualTo("password", password);
-//
-//        Users result = usersMapper.selectOneByExample(userExample);
-//
-//        return result;
-//    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public Users queryUserForLogin(String username, String password) {
+
+//        try {
+//            Thread.sleep(2500);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        Example userExample = new Example(Users.class);
+        Example.Criteria userCriteria = userExample.createCriteria();
+
+        userCriteria.andEqualTo("username", username);
+        userCriteria.andEqualTo("password", password);
+
+        Users result = usersMapper.selectOneByExample(userExample);
+
+        return result;
+    }
 }
