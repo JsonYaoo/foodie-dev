@@ -3,6 +3,7 @@ package com.imooc.controller;
 import com.imooc.enums.YesOrNo;
 import com.imooc.pojo.Carousel;
 import com.imooc.pojo.Category;
+import com.imooc.pojo.vo.CategoryVO;
 import com.imooc.service.CarouselService;
 import com.imooc.service.CategoryService;
 import com.imooc.utils.IMOOCJSONResult;
@@ -47,19 +48,19 @@ public class IndexController {
         return IMOOCJSONResult.ok(list);
     }
 
-//    @ApiOperation(value = "获取商品子分类", notes = "获取商品子分类", httpMethod = "GET")
-//    @GetMapping("/subCat/{rootCatId}")
-//    public IMOOCJSONResult subCat(
-//            @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
-//            @PathVariable Integer rootCatId) {
-//
-//        if (rootCatId == null) {
-//            return IMOOCJSONResult.errorMsg("分类不存在");
-//        }
-//
-//        List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
-//        return IMOOCJSONResult.ok(list);
-//    }
+    @ApiOperation(value = "获取商品子分类", notes = "获取商品子分类", httpMethod = "GET")
+    @GetMapping("/subCat/{rootCatId}")
+    public IMOOCJSONResult subCat(
+            @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
+            @PathVariable Integer rootCatId) {
+
+        if (rootCatId == null) {
+            return IMOOCJSONResult.errorMsg("分类不存在");
+        }
+
+        List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
+        return IMOOCJSONResult.ok(list);
+    }
 //
 //    @ApiOperation(value = "查询每个一级分类下的最新6条商品数据", notes = "查询每个一级分类下的最新6条商品数据", httpMethod = "GET")
 //    @GetMapping("/sixNewItems/{rootCatId}")
