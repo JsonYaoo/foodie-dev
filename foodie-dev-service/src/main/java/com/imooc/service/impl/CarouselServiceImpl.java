@@ -1,7 +1,8 @@
-package com.imooc.service;
+package com.imooc.service.impl;
 
 import com.imooc.mapper.CarouselMapper;
 import com.imooc.pojo.Carousel;
+import com.imooc.service.CarouselService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
