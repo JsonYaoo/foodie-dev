@@ -6,6 +6,7 @@ import com.imooc.pojo.bo.center.CenterUserBO;
 import com.imooc.resources.FileUpload;
 import com.imooc.service.center.CenterUserService;
 import com.imooc.utils.CookieUtils;
+import com.imooc.utils.DateUtil;
 import com.imooc.utils.IMOOCJSONResult;
 import com.imooc.utils.JsonUtils;
 import io.swagger.annotations.Api;
@@ -49,8 +50,6 @@ public class CenterUserController extends BaseController {
             @ApiParam(name = "file", value = "用户头像", required = true)
                     MultipartFile file,
             HttpServletRequest request, HttpServletResponse response) {
-
-        // .sh .php
 
         // 定义头像保存的地址
 //        String fileSpace = IMAGE_USER_FACE_LOCATION;
@@ -117,21 +116,21 @@ public class CenterUserController extends BaseController {
             return IMOOCJSONResult.errorMsg("文件不能为空！");
         }
 
-//        // 获取图片服务地址
-//        String imageServerUrl = fileUpload.getImageServerUrl();
-//
-//        // 由于浏览器可能存在缓存的情况，所以在这里，我们需要加上时间戳来保证更新后的图片可以及时刷新
-//        String finalUserFaceUrl = imageServerUrl + uploadPathPrefix
-//                + "?t=" + DateUtil.getCurrentDateString(DateUtil.DATE_PATTERN);
-//
-//        // 更新用户头像到数据库
-//        Users userResult = centerUserService.updateUserFace(userId, finalUserFaceUrl);
-//
-//        userResult = setNullProperty(userResult);
-//        CookieUtils.setCookie(request, response, "user",
-//                JsonUtils.objectToJson(userResult), true);
-//
-//        // TODO 后续要改，增加令牌token，会整合进redis，分布式会话
+        // 获取图片服务地址
+        String imageServerUrl = fileUpload.getImageServerUrl();
+
+        // 由于浏览器可能存在缓存的情况，所以在这里，我们需要加上时间戳来保证更新后的图片可以及时刷新
+        String finalUserFaceUrl = imageServerUrl + uploadPathPrefix
+                + "?t=" + DateUtil.getCurrentDateString(DateUtil.DATE_PATTERN);
+
+        // 更新用户头像到数据库
+        Users userResult = centerUserService.updateUserFace(userId, finalUserFaceUrl);
+
+        userResult = setNullProperty(userResult);
+        CookieUtils.setCookie(request, response, "user",
+                JsonUtils.objectToJson(userResult), true);
+
+        // TODO 后续要改，增加令牌token，会整合进redis，分布式会话
 
         return IMOOCJSONResult.ok();
     }
