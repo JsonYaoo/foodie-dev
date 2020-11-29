@@ -14,7 +14,6 @@ public class FileUpload {
 
     private String imageUserFaceLocation;
     private String imageServerUrl;
-    private String imageUserFaceMapping;
 
     public String getImageServerUrl() {
         return imageServerUrl;
@@ -32,11 +31,4 @@ public class FileUpload {
         this.imageUserFaceLocation = imageUserFaceLocation;
     }
 
-    public String getImageUserFaceMapping() {
-        return imageUserFaceMapping;
-    }
-
-    public void setImageUserFaceMapping(String imageUserFaceMapping) {
-        this.imageUserFaceMapping = imageUserFaceMapping;
-    }
 }
