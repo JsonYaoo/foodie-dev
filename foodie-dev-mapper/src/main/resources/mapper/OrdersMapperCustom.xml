@@ -103,23 +103,23 @@
     <!--</select>-->
 
 
-    <!--<select id="getMyOrderStatusCounts" parameterType="Map" resultType="int">-->
-        <!--SELECT-->
-            <!--count(1)-->
-        <!--FROM-->
-            <!--orders o-->
-        <!--LEFT JOIN-->
-            <!--order_status os-->
-        <!--on-->
-            <!--o.id = os.order_id-->
-        <!--WHERE-->
-            <!--o.user_id = #{paramsMap.userId}-->
-        <!--AND-->
-            <!--os.order_status = #{paramsMap.orderStatus}-->
-        <!--<if test="paramsMap.isComment != null">-->
-            <!--and o.is_comment = #{paramsMap.isComment}-->
-        <!--</if>-->
-    <!--</select>-->
+    <select id="getMyOrderStatusCounts" parameterType="Map" resultType="int">
+        SELECT
+            count(1)
+        FROM
+            orders o
+        LEFT JOIN
+            order_status os
+        on
+            o.id = os.order_id
+        WHERE
+            o.user_id = #{paramsMap.userId}
+        AND
+            os.order_status = #{paramsMap.orderStatus}
+        <if test="paramsMap.isComment != null">
+            and o.is_comment = #{paramsMap.isComment}
+        </if>
+    </select>
 
 
     <!--<select id="getMyOrderTrend" parameterType="Map" resultType="com.imooc.pojo.OrderStatus">-->
