@@ -110,24 +110,24 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
         return result == 1 ? true : false;
     }
 
-//    @Transactional(propagation=Propagation.REQUIRED)
-//    @Override
-//    public boolean deleteOrder(String userId, String orderId) {
-//
-//        Orders updateOrder = new Orders();
-//        updateOrder.setIsDelete(YesOrNo.YES.type);
-//        updateOrder.setUpdatedTime(new Date());
-//
-//        Example example = new Example(Orders.class);
-//        Example.Criteria criteria = example.createCriteria();
-//        criteria.andEqualTo("id", orderId);
-//        criteria.andEqualTo("userId", userId);
-//
-//        int result = ordersMapper.updateByExampleSelective(updateOrder, example);
-//
-//        return result == 1 ? true : false;
-//    }
-//
+    @Transactional(propagation=Propagation.REQUIRED)
+    @Override
+    public boolean deleteOrder(String userId, String orderId) {
+
+        Orders updateOrder = new Orders();
+        updateOrder.setIsDelete(YesOrNo.YES.type);
+        updateOrder.setUpdatedTime(new Date());
+
+        Example example = new Example(Orders.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id", orderId);
+        criteria.andEqualTo("userId", userId);
+
+        int result = ordersMapper.updateByExampleSelective(updateOrder, example);
+
+        return result == 1 ? true : false;
+    }
+
 //    @Transactional(propagation=Propagation.SUPPORTS)
 //    @Override
 //    public OrderStatusCountsVO getOrderStatusCounts(String userId) {

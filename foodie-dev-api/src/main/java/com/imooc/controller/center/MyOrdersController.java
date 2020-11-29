@@ -102,30 +102,30 @@ public class MyOrdersController extends BaseController {
 
         return IMOOCJSONResult.ok();
     }
-//
-//    @ApiOperation(value="用户删除订单", notes="用户删除订单", httpMethod = "POST")
-//    @PostMapping("/delete")
-//    public IMOOCJSONResult delete(
-//            @ApiParam(name = "orderId", value = "订单id", required = true)
-//            @RequestParam String orderId,
-//            @ApiParam(name = "userId", value = "用户id", required = true)
-//            @RequestParam String userId) throws Exception {
-//
-//        IMOOCJSONResult checkResult = checkUserOrder(userId, orderId);
-//        if (checkResult.getStatus() != HttpStatus.OK.value()) {
-//            return checkResult;
-//        }
-//
-//        boolean res = myOrdersService.deleteOrder(userId, orderId);
-//        if (!res) {
-//            return IMOOCJSONResult.errorMsg("订单删除失败！");
-//        }
-//
-//        return IMOOCJSONResult.ok();
-//    }
-//
-//
-//
+
+    @ApiOperation(value="用户删除订单", notes="用户删除订单", httpMethod = "POST")
+    @PostMapping("/delete")
+    public IMOOCJSONResult delete(
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @RequestParam String orderId,
+            @ApiParam(name = "userId", value = "用户id", required = true)
+            @RequestParam String userId) throws Exception {
+
+        IMOOCJSONResult checkResult = checkUserOrder(userId, orderId);
+        if (checkResult.getStatus() != HttpStatus.OK.value()) {
+            return checkResult;
+        }
+
+        boolean res = myOrdersService.deleteOrder(userId, orderId);
+        if (!res) {
+            return IMOOCJSONResult.errorMsg("订单删除失败！");
+        }
+
+        return IMOOCJSONResult.ok();
+    }
+
+
+
     /**
      * 用于验证用户和订单是否有关联关系，避免非法用户调用
      * @return

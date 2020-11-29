@@ -40,13 +40,13 @@ public interface MyOrdersService {
      */
     public boolean updateReceiveOrderStatus(String orderId);
 
-//    /**
-//     * 删除订单（逻辑删除）
-//     * @param userId
-//     * @param orderId
-//     * @return
-//     */
-//    public boolean deleteOrder(String userId, String orderId);
+    /**
+     * 删除订单（逻辑删除）
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    public boolean deleteOrder(String userId, String orderId);
 //
 //    /**
 //     * 查询用户订单数
