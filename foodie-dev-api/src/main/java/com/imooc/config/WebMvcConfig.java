@@ -20,7 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/META-INF/resources/")  // 映射swagger2 -> 保持原有的资源映射
-                .addResourceLocations(fileUpload.getImageUserFaceMapping());  // 映射本地静态资源 -> 相当于用域名替换调这些路径
+                .addResourceLocations("file:/workspaces/images/");  // 映射本地静态资源 -> 相当于用域名替换调这些路径, 就是写死, 因为要存到数据库中的, 哪个环境都一样
     }
 
     @Bean
