@@ -1,9 +1,11 @@
 package com.imooc.service.impl.center;
 
 import com.github.pagehelper.PageHelper;
+import com.imooc.enums.OrderStatusEnum;
 import com.imooc.mapper.OrderStatusMapper;
 import com.imooc.mapper.OrdersMapper;
 import com.imooc.mapper.OrdersMapperCustom;
+import com.imooc.pojo.OrderStatus;
 import com.imooc.pojo.vo.MyOrdersVO;
 import com.imooc.service.center.MyOrdersService;
 import com.imooc.utils.PagedGridResult;
@@ -11,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,22 +62,22 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
 ////        return grid;
 ////    }
 //
-//    @Transactional(propagation=Propagation.REQUIRED)
-//    @Override
-//    public void updateDeliverOrderStatus(String orderId) {
-//
-//        OrderStatus updateOrder = new OrderStatus();
-//        updateOrder.setOrderStatus(OrderStatusEnum.WAIT_RECEIVE.type);
-//        updateOrder.setDeliverTime(new Date());
-//
-//        Example example = new Example(OrderStatus.class);
-//        Example.Criteria criteria = example.createCriteria();
-//        criteria.andEqualTo("orderId", orderId);
-//        criteria.andEqualTo("orderStatus", OrderStatusEnum.WAIT_DELIVER.type);
-//
-//        orderStatusMapper.updateByExampleSelective(updateOrder, example);
-//    }
-//
+    @Transactional(propagation=Propagation.REQUIRED)
+    @Override
+    public void updateDeliverOrderStatus(String orderId) {
+
+        OrderStatus updateOrder = new OrderStatus();
+        updateOrder.setOrderStatus(OrderStatusEnum.WAIT_RECEIVE.type);
+        updateOrder.setDeliverTime(new Date());
+
+        Example example = new Example(OrderStatus.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("orderId", orderId);
+        criteria.andEqualTo("orderStatus", OrderStatusEnum.WAIT_DELIVER.type);
+
+        orderStatusMapper.updateByExampleSelective(updateOrder, example);
+    }
+
 //    @Transactional(propagation=Propagation.SUPPORTS)
 //    @Override
 //    public Orders queryMyOrder(String userId, String orderId) {
