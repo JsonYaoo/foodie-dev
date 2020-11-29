@@ -1,5 +1,7 @@
 package com.imooc.config;
 
+import com.imooc.resources.FileUpload;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,12 +12,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    @Autowired
+    private FileUpload fileUpload;
+
     // 实现静态资源的映射
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/META-INF/resources/")  // 映射swagger2
-                .addResourceLocations("file:/workspaces/images/");  // 映射本地静态资源
+                .addResourceLocations("classpath:/META-INF/resources/")  // 映射swagger2 -> 保持原有的资源映射
+                .addResourceLocations(fileUpload.getImageUserFaceMapping());  // 映射本地静态资源 -> 相当于用域名替换调这些路径
     }
 
     @Bean
