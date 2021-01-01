@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 // 只读取固定前缀开头的资源
 @ConfigurationProperties(prefix = "file")
 // 读取文件上传资源
-@PropertySource("classpath:file-upload-dev.properties")
+//@PropertySource("classpath:file-upload-dev.properties")
+@PropertySource("classpath:file-upload-prod.properties")
 public class FileUpload {
 
     private String imageUserFaceLocation;
