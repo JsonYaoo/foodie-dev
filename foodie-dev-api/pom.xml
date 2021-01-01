@@ -11,8 +11,11 @@
 
     <artifactId>foodie-dev-api</artifactId>
 
-    <!-- api打包方式为war -->
-    <packaging>jar</packaging>
+    <!-- 微服务化后需要打成jar包 -->
+    <!--<packaging>jar</packaging>-->
+
+    <!-- 1、api打包方式为war -->
+    <packaging>war</packaging>
 
     <dependencies>
         <dependency>
@@ -22,4 +25,8 @@
         </dependency>
     </dependencies>
 
+    <!-- 5、打成war包, 指定打包名称 -->
+    <build>
+        <finalName>foodie-dev-api</finalName>
+    </build>
 </project>

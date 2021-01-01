@@ -16,8 +16,8 @@ server:
 ############################################################
 spring:
   profiles:
-    # 命令行参数优先, 本地测试可用写着dev测试
-    active: dev
+    # 除了配置文件, 还可以通过profiles指定配置文件实现
+    active: prod
   datasource:                                           # 数据源的相关配置
     type: com.zaxxer.hikari.HikariDataSource          # 数据源类型：HikariCP
     driver-class-name: com.mysql.jdbc.Driver          # mysql驱动
