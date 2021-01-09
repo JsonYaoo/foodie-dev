@@ -36,7 +36,14 @@ public class IndexController {
     @Autowired
     private RedisOperator redisOperator;
 
+    // 轮播图缓存key
     private static final String REDIS_KEY_CAROUSEL = "carousel";
+
+    // 一级分类缓存key
+    private static final String REDIS_KEY_CATS = "cats";
+
+    // 二级分类缓存key
+    private static final String REDIS_KEY_SUBCAT = "subCat";
 
     @ApiOperation(value = "获取首页轮播图列表", notes = "获取首页轮播图列表", httpMethod = "GET")
     @GetMapping("/carousel")
@@ -68,8 +75,18 @@ public class IndexController {
     @ApiOperation(value = "获取商品分类(一级分类)", notes = "获取商品分类(一级分类)", httpMethod = "GET")
     @GetMapping("/cats")
     public IMOOCJSONResult cats() {
+        // 查询Redis缓存
+        String catsRedisStr = redisOperator.get(REDIS_KEY_CATS);
+        if(StringUtils.isNotBlank(catsRedisStr)){
+            return IMOOCJSONResult.ok(JsonUtils.jsonToList(catsRedisStr, Category.class));
+        }
+
+        // 设置Redis缓存
         List<Category> list = categoryService.queryAllRootLevelCat();
+        redisOperator.set(REDIS_KEY_CATS, JsonUtils.objectToJson(list));
         return IMOOCJSONResult.ok(list);
+
+        // 后台系统更新缓存
     }
 
     @ApiOperation(value = "获取商品子分类", notes = "获取商品子分类", httpMethod = "GET")
@@ -77,13 +94,22 @@ public class IndexController {
     public IMOOCJSONResult subCat(
             @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
             @PathVariable Integer rootCatId) {
-
         if (rootCatId == null) {
             return IMOOCJSONResult.errorMsg("分类不存在");
         }
 
+        // 查询缓存
+        String subCatRedisStr = redisOperator.get(REDIS_KEY_SUBCAT);
+        if(StringUtils.isNotBlank(subCatRedisStr)){
+            return IMOOCJSONResult.ok(JsonUtils.jsonToList(subCatRedisStr, CategoryVO.class));
+        }
+
+        // 设置缓存
         List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
+        redisOperator.set(REDIS_KEY_SUBCAT, JsonUtils.objectToJson(list));
         return IMOOCJSONResult.ok(list);
+
+        // 后台系统更新缓存
     }
 
     @ApiOperation(value = "查询每个一级分类下的最新6条商品数据", notes = "查询每个一级分类下的最新6条商品数据", httpMethod = "GET")
@@ -96,6 +122,7 @@ public class IndexController {
             return IMOOCJSONResult.errorMsg("分类不存在");
         }
 
+        // 经常发生变换缓存酌情需用
         List<NewItemsVO> list = categoryService.getSixNewItemsLazy(rootCatId);
         return IMOOCJSONResult.ok(list);
     }
