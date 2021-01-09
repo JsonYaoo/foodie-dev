@@ -8,9 +8,12 @@ import com.imooc.pojo.vo.NewItemsVO;
 import com.imooc.service.CarouselService;
 import com.imooc.service.CategoryService;
 import com.imooc.utils.IMOOCJSONResult;
+import com.imooc.utils.JsonUtils;
+import com.imooc.utils.RedisOperator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,11 +33,31 @@ public class IndexController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private RedisOperator redisOperator;
+
+    private static final String REDIS_KEY_CAROUSEL = "carousel";
+
     @ApiOperation(value = "获取首页轮播图列表", notes = "获取首页轮播图列表", httpMethod = "GET")
     @GetMapping("/carousel")
     public IMOOCJSONResult carousel() {
+        // 查询Redis缓存
+        String carouselRedisStr = redisOperator.get(REDIS_KEY_CAROUSEL);
+        if(StringUtils.isNotBlank(carouselRedisStr)){
+            return IMOOCJSONResult.ok(JsonUtils.jsonToList(carouselRedisStr, Carousel.class));
+        }
+
+        // 设置Redis缓存
         List<Carousel> list = carouselService.queryAll(YesOrNo.YES.type);
+        redisOperator.set(REDIS_KEY_CAROUSEL, JsonUtils.objectToJson(list));
         return IMOOCJSONResult.ok(list);
+
+        /**
+         * 关于更新缓存的三种方法：
+         * 1. 后台运营系统，一旦广告（轮播图）发生更改，就可以删除缓存，然后重置
+         * 2. 定时重置，比如每天凌晨三点重置 => 批量更新
+         * 3. 每个轮播图都有可能是一个广告，每个广告都会有一个过期时间，过期了，再重置
+         */
     }
 
     /**
