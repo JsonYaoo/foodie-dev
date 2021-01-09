@@ -99,14 +99,14 @@ public class IndexController {
         }
 
         // 查询缓存
-        String subCatRedisStr = redisOperator.get(REDIS_KEY_SUBCAT);
+        String subCatRedisStr = redisOperator.get(REDIS_KEY_SUBCAT + ":" + rootCatId);
         if(StringUtils.isNotBlank(subCatRedisStr)){
             return IMOOCJSONResult.ok(JsonUtils.jsonToList(subCatRedisStr, CategoryVO.class));
         }
 
         // 设置缓存
         List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
-        redisOperator.set(REDIS_KEY_SUBCAT, JsonUtils.objectToJson(list));
+        redisOperator.set(REDIS_KEY_SUBCAT + ":" + rootCatId, JsonUtils.objectToJson(list));
         return IMOOCJSONResult.ok(list);
 
         // 后台系统更新缓存
