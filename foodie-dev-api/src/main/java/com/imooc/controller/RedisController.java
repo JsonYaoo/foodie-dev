@@ -51,15 +51,18 @@ public class RedisController {
     @GetMapping("/getALot")
     public Object getALot(String... keys){
         List<String> result = new ArrayList<>();
-//        // 循环查询
+        // 循环查询
 //        for(String key : keys){
 //            result.add(redisOperator.get(key));
 //        }
 
         // mget查询
-        result = redisOperator.mget(Arrays.asList(keys));
+//        result = redisOperator.mget(Arrays.asList(keys));
+
+        // 管道查询
+        List<Object> result2 = redisOperator.batchGet(Arrays.asList(keys));
 
         // 返回JsonList类型数据
-        return result;
+        return result2;
     }
 }

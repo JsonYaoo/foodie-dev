@@ -127,14 +127,17 @@ public class RedisOperator {
 	 */
 	public List<Object> batchGet(List<String> keys) {
 
-//		nginx -> keepalive
-//		redis -> pipeline
+//		nginx -> keepalive: nginx长链接方式提高吞吐量
+//		redis -> pipeline: redis通过管道传输多个key提高吞吐量
 
+		// 构建String Redis管道
 		List<Object> result = redisTemplate.executePipelined(new RedisCallback<String>() {
 			@Override
 			public String doInRedis(RedisConnection connection) throws DataAccessException {
+				// 获取管道连接 => 不必关心管道的关闭
 				StringRedisConnection src = (StringRedisConnection)connection;
 
+				// 使用管道传输
 				for (String k : keys) {
 					src.get(k);
 				}
