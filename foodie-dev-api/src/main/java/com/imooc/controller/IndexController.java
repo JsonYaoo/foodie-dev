@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,7 +107,14 @@ public class IndexController {
 
         // 设置缓存
         List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
-        redisOperator.set(REDIS_KEY_SUBCAT + ":" + rootCatId, JsonUtils.objectToJson(list));
+
+        // 1、防止缓存穿透方法一: 如果设置缓存时判了空才设置的话, 可能会出现缓存穿透的现象 => 因此, 设置[], "", {}这些空结果 + 过期时间 可以防止缓存穿透的发生
+        if(!CollectionUtils.isEmpty(list)){
+            redisOperator.set(REDIS_KEY_SUBCAT + ":" + rootCatId, JsonUtils.objectToJson(list));
+        }else {
+            redisOperator.set(REDIS_KEY_SUBCAT + ":" + rootCatId, JsonUtils.objectToJson(list), 5*60);
+        }
+
         return IMOOCJSONResult.ok(list);
 
         // 后台系统更新缓存
