@@ -210,20 +210,6 @@ public class PassportController extends BaseController{
         return IMOOCJSONResult.ok(userResult);
     }
 
-    // 改用UsersVO => 忽略隐私信息, 生成用户token, 存入redis会话
-    private UsersVO conventUsersVO(Users userResult) {
-        // 生成用户token, 存入redis会话
-        String uniqueToken = UUID.randomUUID().toString().trim();
-        redisOperator.set(REDIS_USER_TOKEN + ":" + userResult.getId(), uniqueToken);
-
-        // 复制Users属性
-        UsersVO usersVO = new UsersVO();
-        BeanUtils.copyProperties(userResult, usersVO);
-        usersVO.setUserUniqueToken(uniqueToken);
-
-        return usersVO;
-    }
-
     @ApiOperation(value = "用户退出登录", notes = "用户退出登录", httpMethod = "POST")
     @PostMapping("/logout")
     public IMOOCJSONResult logout(@RequestParam String userId,
