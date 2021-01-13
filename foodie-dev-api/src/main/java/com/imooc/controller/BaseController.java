@@ -23,7 +23,6 @@ public class BaseController {
 
     public static final String REDIS_USER_TOKEN = "redis_user_token";
 
-
     // 支付中心的调用地址
     String paymentUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";		// produce
 

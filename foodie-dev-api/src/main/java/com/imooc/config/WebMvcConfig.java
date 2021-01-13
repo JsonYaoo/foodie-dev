@@ -1,11 +1,13 @@
 package com.imooc.config;
 
+import com.imooc.controller.interceptor.UserTokenInterceptor;
 import com.imooc.resources.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -28,4 +30,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return builder.build();
     }
 
+    @Bean
+    public UserTokenInterceptor userTokenInterceptor() {
+        return new UserTokenInterceptor();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(userTokenInterceptor()).addPathPatterns("/hello/hello");
+        // TODO 继续添加待拦截的路由
+    }
 }
