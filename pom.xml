@@ -47,12 +47,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <!-- 2、打成war包需要剔除自带的Tomcat -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.springframework.boot</groupId>-->
+                    <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
         </dependency>
         <!-- 加入AOP, 打印接口时间 -->
         <dependency>
@@ -141,11 +141,23 @@
             <version>1.2.12</version>
         </dependency>
 
-        <!-- 3、打成war包剔除自带Tomcat后, 需要重新引入servlet依赖 -->
+        <!--&lt;!&ndash; 3、打成war包剔除自带Tomcat后, 需要重新引入servlet依赖 &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>javax.servlet</groupId>-->
+            <!--<artifactId>javax.servlet-api</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+
+        <!-- 引入Spring Session依赖 -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
+        <!-- 引入Spring安全框架 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <!-- 引入Redis依赖 -->

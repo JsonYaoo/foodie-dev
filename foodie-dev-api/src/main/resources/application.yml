@@ -37,6 +37,8 @@ spring:
     multipart:
       max-file-size: 512000           # 文件上传大小限制为500kb: 500 * 1024
       max-request-size: 512000        # 文件上传请求大小限制为500kb: 500 * 1024
+  session:
+    store-type: redis
 
 ############################################################
 #

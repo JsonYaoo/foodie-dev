@@ -14,8 +14,8 @@
     <!-- 微服务化后需要打成jar包 -->
     <!--<packaging>jar</packaging>-->
 
-    <!-- 1、api打包方式为war -->
-    <packaging>war</packaging>
+    <!-- 1、打成war包 -->
+    <!--<packaging>war</packaging>-->
 
     <dependencies>
         <dependency>
@@ -26,7 +26,7 @@
     </dependencies>
 
     <!-- 5、打成war包, 指定打包名称 -->
-    <build>
-        <finalName>foodie-dev-api</finalName>
-    </build>
+    <!--<build>-->
+        <!--<finalName>foodie-dev-api</finalName>-->
+    <!--</build>-->
 </project>
