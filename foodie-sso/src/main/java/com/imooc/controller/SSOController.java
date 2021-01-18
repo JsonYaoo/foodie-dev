@@ -43,7 +43,7 @@ public class SSOController {
     }
 
     /**
-     * 去往CAS登录页
+     * 验证是否已经登录, 来决定是登录还是重定向换区user会话
      * @param returnUrl
      * @param model
      * @param request
@@ -56,7 +56,43 @@ public class SSOController {
                         HttpServletRequest request,
                         HttpServletResponse response){
         model.addAttribute("returnUrl", returnUrl);
+
+        // 1、获取userTicket门票, 如果cookie中能够获取到, 证明用户登录过, 此时签发一个一次性的临时门票
+        String userTicket = getCookie(request, COOKIE_USER_TICKET);
+
+        // 2、验证userTicket通过, 则创建临时票据并回跳
+        if(verifyUserTicket(userTicket)){
+            return "redirect:" + returnUrl + "?tmpTicket=" + createTmpTicket();
+        }
+
+        // 3. 否则, 代表没有登录过, 去往登录页面
         return "login";
+    }
+
+    /**
+     * 验证userTicket
+     * @param userTicket
+     * @return
+     */
+    private boolean verifyUserTicket(String userTicket) {
+        // 0、验证CAS门票不能为空
+        if(StringUtils.isBlank(userTicket)){
+            return false;
+        }
+
+        // 1、验证CAS门票是否有效
+        String userId = redisOperator.get(REDIS_USER_TICKET + ":" + userTicket);
+        if (StringUtils.isBlank(userId)) {
+            return false;
+        }
+
+        // 2. 验证门票对应的user会话是否存在
+        String userRedis = redisOperator.get(REDIS_USER_TOKEN + ":" + userId);
+        if (StringUtils.isBlank(userRedis)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
