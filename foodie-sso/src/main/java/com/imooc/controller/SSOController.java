@@ -147,6 +147,20 @@ public class SSOController {
         // 4. 用户全局门票放到CAS域的Cookie中
         setCookie(COOKIE_USER_TICKET, userTicket, response);
 
+        /**
+         * Cookie与Session：
+         * 1) 登录模块中:
+         *      a. Cookie不是必要的, 如果不用也可以通过每次请求携带上UserId给后端校验登录状态, 但需要在用户登录时就开始记录这个值,
+         *         所以, 一般为了方便, 就用Cookie来存放这个值, 前后端设置都可以
+         *      b. Session一般是用来存放用户会话信息, 用于确保无论请求到达哪一台计算机结点, 后端都可以拿到请求的UserId去校验存在的Session, 以此判断后是否登录的状态,
+         *         只要每个计算机结点能够根据UserId去查到这个Session即可, 所以Session即会话是必要的, 但存放的位置可以随便选,
+         *         比如HttpSession的JSessionId、Redis分布式会话、甚至自定义的数据库都可以
+         * 2) 区别:
+         *      a. Cookie是前端的, Session是后端的
+         *      b. Cookie是Http的, 而Session则可以是很多种的, HttpSession只是其中一种
+         *      c. Cookie失效时间默认是当前会话(Http会话), Cookie设置了失效时间后可以实现关闭浏览器后不用重新登录; HttpSession默认是一段时间, 分布式会话看自己设置的时间
+         *      d. 还有网上的答案: 比如存储大小等
+         */
         // 5. 全局门票关联userId: 代表这个用户有门票了, 可以在各个景区游玩
         redisOperator.set(REDIS_USER_TICKET + ":" + userTicket, userResult.getId());
 
