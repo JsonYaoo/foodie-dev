@@ -145,7 +145,7 @@ public class SSOController {
         String userTicket = UUID.randomUUID().toString().trim();
 
         // 4. 用户全局门票放到CAS域的Cookie中
-        setCookie(COOKIE_USER_TICKET, userTicket, "sso.com", response);
+        setCookie(COOKIE_USER_TICKET, userTicket, response);
 
         // 5. 全局门票关联userId: 代表这个用户有门票了, 可以在各个景区游玩
         redisOperator.set(REDIS_USER_TICKET + ":" + userTicket, userResult.getId());
@@ -171,20 +171,6 @@ public class SSOController {
         }
 
         return tmpTicket;
-    }
-
-    /**
-     * 设置Cookie
-     * @param key
-     * @param value
-     * @param domain
-     * @param response
-     */
-    private void setCookie(String key, String value, String domain, HttpServletResponse response){
-        Cookie cookie = new Cookie(key, value);
-        cookie.setDomain(domain);
-        cookie.setPath("/");
-        response.addCookie(cookie);
     }
 
     @PostMapping("/verifyTmpTicket")
@@ -225,6 +211,25 @@ public class SSOController {
         return IMOOCJSONResult.ok(JsonUtils.jsonToPojo(userRedis, UsersVO.class));
     }
 
+    /**
+     * 设置Cookie
+     * @param key
+     * @param value
+     * @param response
+     */
+    private void setCookie(String key, String value, HttpServletResponse response){
+        Cookie cookie = new Cookie(key, value);
+        cookie.setDomain("sso.com");
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+    /**
+     * 获取Cookie
+     * @param request
+     * @param key
+     * @return
+     */
     private String getCookie(HttpServletRequest request, String key) {
         Cookie[] cookies = request.getCookies();
         if(cookies == null || StringUtils.isBlank(key)){
@@ -240,6 +245,43 @@ public class SSOController {
         }
 
         return cookieValue;
+    }
+
+    /**
+     * 删除Cookie
+     * @param key
+     * @param response
+     */
+    private void deleteCookie(String key, HttpServletResponse response){
+        Cookie cookie = new Cookie(key, null);
+        cookie.setDomain("sso.com");
+        cookie.setPath("/");
+        cookie.setMaxAge(-1);
+        response.addCookie(cookie);
+    }
+
+    /**
+     * 注销登录
+     * @param userId
+     * @param request
+     * @param response
+     * @return
+     */
+    @PostMapping("/logout")
+    @ResponseBody
+    public IMOOCJSONResult logout(String userId, HttpServletRequest request, HttpServletResponse response){
+        // 0、获取CAS中的用户门票
+        String userTicket = getCookie(request, COOKIE_USER_TICKET);
+
+        // 1、清除userTicket票据, redis & cookie
+        deleteCookie(COOKIE_USER_TICKET, response);
+        redisOperator.del(REDIS_USER_TICKET + ":" + userTicket);
+
+        // 2. 清除用户全局会话(分布式会话)
+        redisOperator.del(REDIS_USER_TOKEN + ":" + userId);
+
+        // 3. 返回ok
+        return IMOOCJSONResult.ok();
     }
 
 }
