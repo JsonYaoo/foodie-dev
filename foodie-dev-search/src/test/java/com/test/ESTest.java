@@ -3,11 +3,14 @@ package com.test;
 import com.imooc.EsApplication;
 import com.imooc.es.pojo.Stu;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -92,5 +95,23 @@ public class ESTest {
     @Test
     public void deleteStuDoc(){
         esTemplate.delete(Stu.class, "1002");
+    }
+
+    /**
+     * 分页检索文档
+     */
+    @Test
+    public void searchStuDoc(){
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.matchQuery("description", "save man"))
+                .withPageable(pageRequest)
+                .build();
+        AggregatedPage<Stu> pagedStu = esTemplate.queryForPage(nativeSearchQuery, Stu.class);
+
+        System.out.println("检索后的总分页数目为: " + pagedStu.getTotalPages());
+        for (Stu stu : pagedStu.getContent()) {
+            System.out.println(stu);
+        }
     }
 }
