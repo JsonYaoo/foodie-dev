@@ -2,6 +2,7 @@ package com.test;
 
 import com.imooc.EsApplication;
 import com.imooc.es.pojo.Stu;
+import org.elasticsearch.action.index.IndexRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = EsApplication.class)
@@ -26,6 +32,9 @@ public class ESTest {
     @Autowired
     private ElasticsearchTemplate esTemplate;
 
+    /**
+     * 创建索引
+     */
     @Test
     public void createIndexStu(){
         Stu stu = new Stu();
@@ -40,8 +49,32 @@ public class ESTest {
         esTemplate.index(indexQuery);
     }
 
+    /**
+     * 删除索引
+     */
     @Test
     public void deleteIndexStu(){
         esTemplate.deleteIndex(Stu.class);
+    }
+
+    /**
+     * 更新文档
+     */
+    @Test
+    public void updateStuDoc(){
+        Map<String, Object> sourceMap = new HashMap<>();
+        sourceMap.put("sign", "I am not a super man");
+        sourceMap.put("money", 88.6F);
+        sourceMap.put("age", 33);
+
+        IndexRequest indexRequest = new IndexRequest();
+        indexRequest.source(sourceMap);
+
+        UpdateQuery updateQuery = new UpdateQueryBuilder()
+                .withClass(Stu.class)
+                .withId("1002")
+                .withIndexRequest(indexRequest)
+                .build();
+        esTemplate.update(updateQuery);
     }
 }
