@@ -8,10 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
-import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.UpdateQuery;
-import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
@@ -76,5 +73,24 @@ public class ESTest {
                 .withIndexRequest(indexRequest)
                 .build();
         esTemplate.update(updateQuery);
+    }
+
+    /**
+     * 查询文档
+     */
+    @Test
+    public void getStuDoc(){
+        GetQuery getQuery = new GetQuery();
+        getQuery.setId("1002");
+        Stu stu = esTemplate.queryForObject(getQuery, Stu.class);
+        System.out.println(stu);
+    }
+
+    /**
+     * 删除文档
+     */
+    @Test
+    public void deleteStuDoc(){
+        esTemplate.delete(Stu.class, "1002");
     }
 }
