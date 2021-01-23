@@ -3,18 +3,29 @@ package com.test;
 import com.imooc.EsApplication;
 import com.imooc.es.pojo.Stu;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.SearchResultMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -108,6 +119,55 @@ public class ESTest {
                 .withPageable(pageRequest)
                 .build();
         AggregatedPage<Stu> pagedStu = esTemplate.queryForPage(nativeSearchQuery, Stu.class);
+
+        System.out.println("检索后的总分页数目为: " + pagedStu.getTotalPages());
+        for (Stu stu : pagedStu.getContent()) {
+            System.out.println(stu);
+        }
+    }
+
+    /**
+     * 高亮检索文档
+     */
+    @Test
+    public void highlightSearchStuDoc(){
+        HighlightBuilder.Field highlightBuilderField = new HighlightBuilder.Field("description")
+                .preTags("<font color='red'>")
+                .postTags("</font>");
+
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.matchQuery("description", "save man"))
+                .withHighlightFields(highlightBuilderField)
+                .withPageable(PageRequest.of(0, 10))
+                .build();
+        AggregatedPage<Stu> pagedStu = esTemplate.queryForPage(nativeSearchQuery, Stu.class, new SearchResultMapper() {
+            @Override
+            public <T> AggregatedPage<T> mapResults(SearchResponse searchResponse, Class<T> aClass, Pageable pageable) {
+                List<Stu> highlightedStuList = new ArrayList<>();
+
+                SearchHits hits = searchResponse.getHits();
+                for (SearchHit hit : hits) {
+                    HighlightField highlightField = hit.getHighlightFields().get("description");
+                    String description = highlightField.getFragments()[0].toString();
+
+                    Stu stu = new Stu();
+                    stu.setStuId(Long.valueOf((hit.getSourceAsMap().get("stuId").toString())));
+                    stu.setName((hit.getSourceAsMap().get("name").toString()));
+                    stu.setAge(Integer.valueOf((hit.getSourceAsMap().get("age").toString())));
+                    stu.setSign((hit.getSourceAsMap().get("sign").toString()));
+                    stu.setMoney(Float.valueOf((hit.getSourceAsMap().get("money").toString())));
+                    stu.setDescription(description);
+
+                    highlightedStuList.add(stu);
+                }
+
+                if(!CollectionUtils.isEmpty(highlightedStuList)){
+                    return new AggregatedPageImpl<>((List)highlightedStuList);
+                }
+
+                return null;
+            }
+        });
 
         System.out.println("检索后的总分页数目为: " + pagedStu.getTotalPages());
         for (Stu stu : pagedStu.getContent()) {
