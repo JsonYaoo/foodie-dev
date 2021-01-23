@@ -9,6 +9,9 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,6 +171,28 @@ public class ESTest {
                 return null;
             }
         });
+
+        System.out.println("检索后的总分页数目为: " + pagedStu.getTotalPages());
+        for (Stu stu : pagedStu.getContent()) {
+            System.out.println(stu);
+        }
+    }
+
+    /**
+     * 检索文档后排序
+     */
+    @Test
+    public void searchAndSortStuDoc(){
+        SortBuilder moneySortBuilder = new FieldSortBuilder("money").order(SortOrder.DESC);
+        SortBuilder ageSortBuilder = new FieldSortBuilder("age").order(SortOrder.ASC);
+
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.matchQuery("description", "save man"))
+                .withSort(moneySortBuilder)
+                .withSort(ageSortBuilder)
+                .withPageable(PageRequest.of(0, 10))
+                .build();
+        AggregatedPage<Stu> pagedStu = esTemplate.queryForPage(nativeSearchQuery, Stu.class);
 
         System.out.println("检索后的总分页数目为: " + pagedStu.getTotalPages());
         for (Stu stu : pagedStu.getContent()) {
