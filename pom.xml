@@ -15,6 +15,7 @@
         <module>foodie-dev-service</module>
         <module>foodie-dev-api</module>
         <module>foodie-sso</module>
+        <module>foodie-dev-search</module>
     </modules>
 
     <!-- 3种类型 pom, war, jar, 顶级模块用pom方式打包-->
