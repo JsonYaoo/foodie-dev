@@ -34,9 +34,11 @@ public class ItemsESServiceImpl implements ItemsESService {
         page--;// ES分页从0开始
 
         String itemNameField = "itemName";
-        HighlightBuilder.Field highlightBuilderField = new HighlightBuilder.Field(itemNameField)
-                .preTags("<font color='red'>")
-                .postTags("</font>");
+
+        // 使用默认</em>标签
+        HighlightBuilder.Field highlightBuilderField = new HighlightBuilder.Field(itemNameField);
+//                .preTags("<font color='red'>")
+//                .postTags("</font>");
 
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.matchQuery(itemNameField, keywords))
