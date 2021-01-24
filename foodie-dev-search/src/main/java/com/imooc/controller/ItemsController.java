@@ -31,7 +31,6 @@ public class ItemsController {
         if (page == null) {
             page = 1;
         }
-        page--;
         if (pageSize == null) {
             pageSize = 20;
         }
