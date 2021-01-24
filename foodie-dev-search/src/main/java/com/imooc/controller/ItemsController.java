@@ -1,22 +1,47 @@
 package com.imooc.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.imooc.service.ItemsESService;
+import com.imooc.utils.IMOOCJSONResult;
+import com.imooc.utils.PagedGridResult;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/esHello")
+@RequestMapping("/items")
 public class ItemsController {
+
+    @Autowired
+    private ItemsESService itemsESService;
 
     @GetMapping("/hello")
     public Object hello(){
         return "Hello ES~~~";
+    }
+
+    @GetMapping("/es/search")
+    public IMOOCJSONResult search(String keywords, String sort, Integer page, Integer pageSize) {
+
+        if (StringUtils.isBlank(keywords)) {
+            return IMOOCJSONResult.errorMsg(null);
+        }
+
+        if (page == null) {
+            page = 1;
+        }
+        page--;
+        if (pageSize == null) {
+            pageSize = 20;
+        }
+
+        PagedGridResult grid = itemsESService.searhItems(keywords,
+                sort,
+                page,
+                pageSize);
+
+        return IMOOCJSONResult.ok(grid);
     }
 
 }
