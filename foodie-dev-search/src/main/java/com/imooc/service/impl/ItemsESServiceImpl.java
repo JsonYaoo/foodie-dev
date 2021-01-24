@@ -9,6 +9,9 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +43,24 @@ public class ItemsESServiceImpl implements ItemsESService {
 //                .preTags("<font color='red'>")
 //                .postTags("</font>");
 
+        // 排序判断
+        SortBuilder sortBuilder = null;
+        switch (sort){
+            case "c":
+                sortBuilder = new FieldSortBuilder("sellCounts").order(SortOrder.DESC);
+                break;
+            case "p":
+                sortBuilder = new FieldSortBuilder("price").order(SortOrder.ASC);
+                break;
+            default:
+                sortBuilder = new FieldSortBuilder("itemName.keyword").order(SortOrder.ASC);
+                break;
+        }
+
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.matchQuery(itemNameField, keywords))
                 .withHighlightFields(highlightBuilderField)
+                .withSort(sortBuilder)
                 .withPageable(PageRequest.of(page, pageSize))
                 .build();
         AggregatedPage<Items> pagedObject = esTemplate.queryForPage(nativeSearchQuery, Items.class, new SearchResultMapper() {
