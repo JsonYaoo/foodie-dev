@@ -50,7 +50,8 @@ public class FdfsController extends FdfsBaseController {
                         !suffix.equalsIgnoreCase("jpeg") ) {
                     return IMOOCJSONResult.errorMsg("图片格式不正确！");
                 }
-                path = fdfsService.upload(file, suffix);
+//                path = fdfsService.upload(file, suffix);
+                path = fdfsService.uploadOss(file, userId, suffix);
             }
         } else {
             return IMOOCJSONResult.errorMsg("文件不能为空！");
@@ -60,7 +61,10 @@ public class FdfsController extends FdfsBaseController {
             return IMOOCJSONResult.errorMsg("上传头像失败！");
         }
 
-        String finalUserFaceUrl = fileResource.getHost() + path;
+//        String finalUserFaceUrl = fileResource.getHost() + path;
+        String finalUserFaceUrl = fileResource.getOssHost() + path;
+        System.out.println("图片上传路径为: " + path);
+
         Users userResult = centerUserService.updateUserFace(userId, finalUserFaceUrl);
         CookieUtils.setCookie(request, response, "user",
                 JsonUtils.objectToJson(conventUsersVO(userResult)), true);
