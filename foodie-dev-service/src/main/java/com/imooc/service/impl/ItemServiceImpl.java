@@ -13,6 +13,10 @@ import com.imooc.pojo.vo.ShopcartVO;
 import com.imooc.service.ItemService;
 import com.imooc.utils.DesensitizationUtil;
 import com.imooc.utils.PagedGridResult;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,9 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ItemServiceImpl implements ItemService {
+
+    final static Logger logger = LoggerFactory.getLogger(ItemServiceImpl.class);
 
     @Autowired
     private ItemsMapper itemsMapper;
@@ -36,6 +43,8 @@ public class ItemServiceImpl implements ItemService {
     private ItemsCommentsMapper itemsCommentsMapper;
     @Autowired
     private ItemsMapperCustom itemsMapperCustom;
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
@@ -212,10 +221,19 @@ public class ItemServiceImpl implements ItemService {
 
         // lockUtil.unLock(); -- 解锁
 
-
-        int result = itemsMapperCustom.decreaseItemSpecStock(specId, buyCounts);
-        if (result != 1) {
-            throw new RuntimeException("订单创建失败，原因：库存不足!");
+        // 使用Redisson分布式锁把数据库压力前移到应用层
+        RLock lock = redissonClient.getLock("item_lock" + ":" + specId);
+        lock.lock(30, TimeUnit.SECONDS);
+        try {
+            logger.info("获得了锁!");
+            int result = itemsMapperCustom.decreaseItemSpecStock(specId, buyCounts);
+            if (result != 1) {
+                logger.info("库存不足!");
+                throw new RuntimeException("订单创建失败，原因：库存不足!");
+            }
+        }finally {
+            lock.unlock();
+            logger.info("释放了锁!");
         }
     }
 }
