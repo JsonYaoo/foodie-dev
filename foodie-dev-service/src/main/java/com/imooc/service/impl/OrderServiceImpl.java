@@ -85,6 +85,10 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setCreatedTime(new Date());
         newOrder.setUpdatedTime(new Date());
 
+        // !!1. Order插入提前: 解决整合MyCat报错
+        newOrder.setTotalAmount(0);
+        newOrder.setRealPayAmount(0);
+        ordersMapper.insert(newOrder);
 
         // 2. 循环根据itemSpecIds保存订单商品信息表
         String itemSpecIdArr[] = itemSpecIds.split(",");
@@ -126,9 +130,11 @@ public class OrderServiceImpl implements OrderService {
             itemService.decreaseItemSpecStock(itemSpecId, buyCounts);
         }
 
+        // !!2. 然后在更新Order真实金额, 只更新不为空的值: 解决整合MyCat报错
+        newOrder.setUserId(null);// MyCat分片字段插入后不能再更新
         newOrder.setTotalAmount(totalAmount);
         newOrder.setRealPayAmount(realPayAmount);
-        ordersMapper.insert(newOrder);
+        ordersMapper.updateByPrimaryKeySelective(newOrder);
 
         // 3. 保存订单状态表
         OrderStatus waitPayOrderStatus = new OrderStatus();

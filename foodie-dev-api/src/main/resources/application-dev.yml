@@ -4,12 +4,13 @@ server:
 spring:
   datasource:
     # 集群时一定要写内网IP
-    url: jdbc:mysql://localhost:3306/foodie_shop_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
-    password: root
+#    url: jdbc:mysql://localhost:3306/foodie_shop_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    url: jdbc:mysql://192.168.1.141:8066/foodie_shop_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    password: 123456
   redis:
     # Redis单机单实例
-    database: 1
-    host: 192.168.1.111
+    database: 0
+    host: 192.168.1.142
     port: 6379
     password: root
     # Redis哨兵模式
