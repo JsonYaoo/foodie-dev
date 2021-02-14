@@ -1,4 +1,4 @@
-package com.jsonyao.cs;
+package com.jsonyao.cs.test;
 
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnel;

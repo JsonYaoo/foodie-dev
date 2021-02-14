@@ -20,6 +20,10 @@ public class Sid {
     public static synchronized void configure(WorkerIdStrategy custom) {
         if (workerIdStrategy != null) workerIdStrategy.release();
         workerIdStrategy = custom;
+
+        // 分布式ID: 保证唯一WorkerID => 根据IP换算得来
+        workerIdStrategy.initialize();
+
         idWorker = new IdWorker(workerIdStrategy.availableWorkerId()) {
             @Override
             public long getEpoch() {
