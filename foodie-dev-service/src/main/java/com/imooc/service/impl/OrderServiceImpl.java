@@ -128,6 +128,9 @@ public class OrderServiceImpl implements OrderService {
 
             // 2.4 在用户提交订单以后，规格表中需要扣除库存
             itemService.decreaseItemSpecStock(itemSpecId, buyCounts);
+
+            // !!3. 测试MyCat分布式事务: 主动抛出异常
+            throw new RuntimeException("测试分布式事务: 主动抛出异常");
         }
 
         // !!2. 然后在更新Order真实金额, 只更新不为空的值: 解决整合MyCat报错
