@@ -15,6 +15,8 @@ import com.imooc.utils.RedisOperator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,10 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Api(value = "订单相关", tags = {"订单相关的api接口"})
 @RequestMapping("orders")
@@ -36,14 +41,36 @@ public class OrdersController extends BaseController {
 
     final static Logger logger = LoggerFactory.getLogger(OrdersController.class);
 
+    /**
+     * 分布式接口幂等性: 订单Token前缀
+     */
+    public static final String REDIS_ORDER_TOKEN_KEY_PREFIX = "ORDER_TOKEN_";
+    /**
+     * 分布式接口幂等性: 订单Lock前缀
+     */
+    public static final String REDIS_ORDER_LOCK_KEY_PREFIX = "ORDER_LOCK_";
+
     @Autowired
     private OrderService orderService;
-
     @Autowired
     private RestTemplate restTemplate;
-
     @Autowired
     private RedisOperator redisOperator;
+    @Autowired
+    private RedissonClient redissonClient;
+
+    @ApiOperation(value = "获取订单Token", notes = "获取订单Token", httpMethod = "POST")
+    @PostMapping("/getOrderToken")
+    // 这里为了方便用了httpSession, 而实际中要用分布式会话中的id
+    public IMOOCJSONResult getOrderToken(HttpSession httpSession){
+        String token = UUID.randomUUID().toString();
+
+        // 分布式接口幂等性: 存到Redis中, 用于校验, 过期时间10分钟
+        redisOperator.set(REDIS_ORDER_TOKEN_KEY_PREFIX + httpSession.getId(), token, 600);
+
+        // 返回到订单提交页
+        return IMOOCJSONResult.ok(token);
+    }
 
     @ApiOperation(value = "用户下单", notes = "用户下单", httpMethod = "POST")
     @PostMapping("/create")
@@ -52,6 +79,31 @@ public class OrdersController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response) {
 
+        // !!4、分布式接口幂等性: 获取Redis分布式锁, 防止并发情况
+        RLock lock = redissonClient.getLock(REDIS_ORDER_LOCK_KEY_PREFIX + request.getSession().getId());
+        lock.lock(5, TimeUnit.SECONDS);
+        try {
+            // !!4、分布式接口幂等性: 从Redis中获取orderToken, 校验通过的则获取分布式锁
+            String redisOrderTokenKey = REDIS_ORDER_TOKEN_KEY_PREFIX + request.getSession().getId();
+            String redisOrderToken = redisOperator.get(redisOrderTokenKey);
+            if(StringUtils.isBlank(redisOrderToken)){
+                throw new RuntimeException("orderToken不存在");
+            }
+            if(!redisOrderToken.equals(submitOrderBO.getToken())){
+                throw new RuntimeException("orderToken不正确");
+            }
+
+            // !!4、分布式接口幂等性: 校验通过则删除RedisKey
+            redisOperator.del(redisOrderTokenKey);
+        }finally {
+            try {
+                lock.unlock();
+            } catch (Exception e) {
+                // 锁过期, do nothing...
+            }
+        }
+
+        // 校验支付方式
         if (submitOrderBO.getPayMethod() != PayMethod.WEIXIN.type
             && submitOrderBO.getPayMethod() != PayMethod.ALIPAY.type ) {
             return IMOOCJSONResult.errorMsg("支付方式不支持！");
