@@ -17,22 +17,21 @@
     <!-- 1、打成war包 -->
     <!--<packaging>war</packaging>-->
 
-    <properties>
-        <spring-boot-admin.version>2.3.1</spring-boot-admin.version>
-    </properties>
-
-    <dependencyManagement>
-        <!-- 整合SpringBoot Admin -->
-        <dependencies>
-            <dependency>
-                <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-dependencies</artifactId>
-                <version>${spring-boot-admin.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <!--<properties>-->
+        <!--<spring-boot-admin.version>2.3.1</spring-boot-admin.version>-->
+    <!--</properties>-->
+    <!--<dependencyManagement>-->
+        <!--&lt;!&ndash; 整合SpringBoot Admin &ndash;&gt;-->
+        <!--<dependencies>-->
+            <!--<dependency>-->
+                <!--<groupId>de.codecentric</groupId>-->
+                <!--<artifactId>spring-boot-admin-dependencies</artifactId>-->
+                <!--<version>${spring-boot-admin.version}</version>-->
+                <!--<type>pom</type>-->
+                <!--<scope>import</scope>-->
+            <!--</dependency>-->
+        <!--</dependencies>-->
+    <!--</dependencyManagement>-->
 
     <dependencies>
         <dependency>
@@ -46,9 +45,15 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>de.codecentric</groupId>-->
+            <!--<artifactId>spring-boot-admin-starter-client</artifactId>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <groupId>net.bull.javamelody</groupId>
+            <artifactId>javamelody-spring-boot-starter</artifactId>
+            <version>1.81.0</version>
         </dependency>
     </dependencies>
 

@@ -92,3 +92,28 @@ pagehelper:
   helperDialect: mysql
   # 是否支持分页参数传递
   supportMethodsArguments: true
+
+# 整合Javamelody监控
+javamelody:
+  # 是否整合Javamelody, 默认为true
+  enabled: true
+  # 排除不想监控的数据源
+  excluded-datasources: secretSource,topSecretSource
+  # 是否启用Spring Service & controller的监控, 默认是true
+  spring-monitoring-enabled: true
+  # 初始化配置项
+  init-parameters:
+    # 是否记录http请求
+    log: true
+    # 哪些路径不用被监控, 默认静态文件不用被监控
+    #url-exclude-pattern: (/webjars/.*|/css/.*|/images/.*|/fonts/.*|/js/.*)
+    # 用来转换http请求的路径, 将其中动态的部分删除
+    #http-transform-pattern: \d+
+    # 设置账号密码
+    authorized-users: admin:pwd
+    # 监控数据存储路径
+    #storage-directory: /tmp/javamelody
+    # Javamelody访问路径, 默认是/monitoring
+    #monitoring-path: /admin/performance
+  # 整合SpringBoot Actuator => http://localhost:8088/actuator/monitoring & 账号密码失效
+  management-endpoint-monitoring-enabled: true
