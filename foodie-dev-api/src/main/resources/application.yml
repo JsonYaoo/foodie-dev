@@ -9,12 +9,34 @@ server:
     uri-encoding: UTF-8
   max-http-header-size: 80KB
 
+# 测试SpringBoot Actuator
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+# SpringBoot Actuator Info
+info:
+  project-name: foodie-dev
+  author: jsonyao
+  owner-email: yaocs2@qq.com
+
 ############################################################
 #
 # 配置数据源信息
 #
 ############################################################
 spring:
+  # SpringBoot Admin
+  boot:
+    admin:
+      client:
+        url: http://localhost:8988
+        instance:
+          name: foodie-dev
   profiles:
     # 除了配置文件, 还可以通过profiles指定配置文件实现
     active: dev
