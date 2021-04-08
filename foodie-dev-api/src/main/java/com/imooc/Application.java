@@ -1,9 +1,15 @@
 package com.imooc;
 
+import com.imooc.jvm.objectpool.datasource.DataSourceEndpoint;
+import com.imooc.jvm.objectpool.datasource.JsonYaoDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
 import tk.mybatis.spring.annotation.MapperScan;
+
+import javax.sql.DataSource;
 
 // 多个聚合工程时, 如果冲突还是会发生Spring Session登录的, 所以直接去掉依赖吧
 //@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
@@ -22,4 +28,16 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
+    // 使用作为Mybatis的数据源
+    @Bean
+    @Primary
+    public DataSource jsonYaoDataSource() {
+        return new JsonYaoDataSource();
+    }
+
+    @Bean
+    public DataSourceEndpoint dataSourceEndpoint() {
+        DataSource jsonYaoDataSource = this.jsonYaoDataSource();
+        return new DataSourceEndpoint((JsonYaoDataSource) jsonYaoDataSource);
+    }
 }

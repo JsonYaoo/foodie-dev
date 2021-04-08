@@ -98,7 +98,7 @@ javamelody:
   # 是否整合Javamelody, 默认为true
   enabled: true
   # 排除不想监控的数据源
-  excluded-datasources: secretSource,topSecretSource
+  excluded-datasources: secretSource,topSecretSource,jsonYaoDataSource
   # 是否启用Spring Service & controller的监控, 默认是true
   spring-monitoring-enabled: true
   # 初始化配置项
