@@ -55,6 +55,11 @@
             <artifactId>javamelody-spring-boot-starter</artifactId>
             <version>1.81.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
     </dependencies>
 
     <!-- 5、打成war包, 指定打包名称 -->
