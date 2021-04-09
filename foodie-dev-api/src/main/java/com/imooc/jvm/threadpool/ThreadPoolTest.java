@@ -19,13 +19,18 @@ public class ThreadPoolTest {
                 10L,
                 // keepAliveTime的时间单位
                 TimeUnit.SECONDS,
-                // 存储等待执行的任务, 传入BlockingQueue => 相当于"任务计划"
+                // 当线程达到corePoolSize时, 则把等待执行的任务传入BlockingQueue, 存储到队列中 => 相当于"任务计划"
+                // 这时如果是无界队列, 则任务会一直在队列中排队下去, 而不会去创建非核心线程, 因为只有在队列满了, 才会去创建非核心线程
                 new LinkedBlockingDeque<>(),
                 // 线程工厂, 用于创建线程: defaultThreadFactory、privilegedThreadFactory(访问控制) => 相当于"人才市场"
                 Executors.defaultThreadFactory(),
                 // 拒绝任务的策略, 在线程繁忙且队列满时触发: AbortPolicy、CallerRusPolicy、DiscardOldestPolicy、DiscardPolicy => 相当于"解雇策略"
                 new ThreadPoolExecutor.AbortPolicy()
         );
+
+        // 重新设置线程池容量
+        executor.setMaximumPoolSize(50);
+
 
         // 测试任务提交
         executor.execute(new Runnable() {
