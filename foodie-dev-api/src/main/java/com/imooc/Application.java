@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import tk.mybatis.spring.annotation.MapperScan;
 
 import javax.sql.DataSource;
@@ -42,5 +44,15 @@ public class Application {
     public DataSourceEndpoint dataSourceEndpoint() {
         DataSource jsonYaoDataSource = this.jsonYaoDataSource();
         return new DataSourceEndpoint((JsonYaoDataSource) jsonYaoDataSource);
+    }
+
+    @Bean
+    public AsyncRestTemplate asyncRestTemplate() {
+        return new AsyncRestTemplate();
+    }
+
+    @Bean
+    public WebClient webClient() {
+        return WebClient.create();
     }
 }

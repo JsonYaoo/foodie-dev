@@ -40,25 +40,37 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- 测试Springboot Admin-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
         <!--<dependency>-->
             <!--<groupId>de.codecentric</groupId>-->
             <!--<artifactId>spring-boot-admin-starter-client</artifactId>-->
         <!--</dependency>-->
 
+        <!-- 测试Javamelody -->
         <dependency>
             <groupId>net.bull.javamelody</groupId>
             <artifactId>javamelody-spring-boot-starter</artifactId>
             <version>1.81.0</version>
         </dependency>
 
+        <!-- 测试对象池 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
+        </dependency>
+
+        <!-- 测试WebClient -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty</artifactId>
         </dependency>
     </dependencies>
 
