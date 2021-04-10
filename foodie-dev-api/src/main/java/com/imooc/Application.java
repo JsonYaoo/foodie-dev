@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.EnableAsync;
 import tk.mybatis.spring.annotation.MapperScan;
 
 import javax.sql.DataSource;
@@ -22,6 +23,8 @@ import javax.sql.DataSource;
 //@EnableScheduling
 // 开启使用Redis作为Spring Session
 //@EnableRedisHttpSession
+// 异步化测试, 测试@Async
+@EnableAsync
 public class Application {
 
     public static void main(String[] args) {
