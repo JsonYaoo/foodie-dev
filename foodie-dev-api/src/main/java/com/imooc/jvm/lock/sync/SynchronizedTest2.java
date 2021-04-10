@@ -1,4 +1,4 @@
-package com.imooc.jvm.lock;
+package com.imooc.jvm.lock.sync;
 
 import java.util.List;
 import java.util.Vector;

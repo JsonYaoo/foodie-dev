@@ -1,4 +1,4 @@
-package com.imooc.jvm.lock;
+package com.imooc.jvm.lock.sync;
 
 /**
  * 测试锁优化: 锁粗化: 将多个连续的加锁、解锁操作连接在一起, 扩展成一个范围更大的锁

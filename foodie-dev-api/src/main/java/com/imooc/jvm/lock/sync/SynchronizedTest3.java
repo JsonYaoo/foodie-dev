@@ -1,4 +1,4 @@
-package com.imooc.jvm.lock;
+package com.imooc.jvm.lock.sync;
 
 /**
  * 测试锁优化: 锁消除
