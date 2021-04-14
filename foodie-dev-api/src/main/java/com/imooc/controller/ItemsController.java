@@ -15,13 +15,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 @Api(value = "商品接口", tags = {"商品信息展示的相关接口"})
 @RestController
 @RequestMapping("items")
+@Validated
 public class ItemsController extends BaseController{
 
     @Autowired
@@ -66,6 +69,10 @@ public class ItemsController extends BaseController{
         return IMOOCJSONResult.ok(countsVO);
     }
 
+    // 有OOM风险的代码:
+    // 假设某个itemId下面的商品评论特别多, 比如有100,0000,0000条
+    // 那么如果请求catItems/comments?itemId=1&page=1&pageSize=100,0000,0000时, 则可能会直接把服务器搞成OOM
+    // => 解决: 可以使用org.springframework.validation来增加校验查询的数目, @Max(100) => 大于100时会报错
     @ApiOperation(value = "查询商品评论", notes = "查询商品评论", httpMethod = "GET")
     @GetMapping("/comments")
     public IMOOCJSONResult comments(
@@ -76,7 +83,7 @@ public class ItemsController extends BaseController{
             @ApiParam(name = "page", value = "查询下一页的第几页", required = false)
             @RequestParam Integer page,
             @ApiParam(name = "pageSize", value = "分页的每一页显示的条数", required = false)
-            @RequestParam Integer pageSize) {
+            @RequestParam @Max(100) Integer pageSize) {
 
         if (StringUtils.isBlank(itemId)) {
             return IMOOCJSONResult.errorMsg(null);

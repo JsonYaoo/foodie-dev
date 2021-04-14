@@ -1,0 +1,25 @@
+# 1、JDK8打印JVM日志:
+-Xms50m -Xmx50m -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintGCCause -Xloggc:D:\MyData\yaocs2\Desktop\mylog\gclog.log
+初始堆内存大小: -Xms50m
+最大堆内存大小(目的是让项目尽早进入GC, 方便测试): -Xmx50m
+打印GC详情: -XX:+PrintGCDetails
+打印GC日期: -XX:+PrintGCDateStamps
+打印GC时间戳: -XX:+PrintGCTimeStamps
+打印GC的原因: -XX:+PrintGCCause
+指定GC日志位置: -Xloggc:D:\MyData\yaocs2\Desktop\mylog\gclog.log
+
+# 2、JDK8运行时日志打印参数
+-XX:+TraceClassLoading -XX:+TraceBiasedLocking
+项目启动时, 跟踪类加载的情况: -XX:+TraceClassLoading
+以及跟踪偏向锁的运行情况: -XX:+TraceBiasedLocking
+
+# JDK11
+# 3、示例1：使用info级别记录所有信息到stdout，装饰器使用uptime、level及tags
+# 等价于-Xlog:all=info:stdout:uptime,levels,tags
+-Xlog
+
+# 4、JDK 11等价(=> JDK8打印JVM日志)写法 => 注意-Xlog只支持"Linux"写法的路径
+-Xms50m -Xmx50m -Xlog:gc*=trace:file=./xloggc.log
+
+# 5、JDK 11等价(=> JDK8运行时日志打印参数)写法 => 注意-Xlog只支持"Linux"写法的路径
+-Xlog:class+load=debug,biasedlocking=debug:file=trace.log
