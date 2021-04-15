@@ -1,0 +1,44 @@
+# CMS GC收集器日志分析: -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+UseConcMarkSweepGC -Xmx50m -Xloggc:./GC_CMS.log
+# 结论: => 日志格式大体上与GC_Serial.log一致, 但增加了一些CMS的步骤描述
+Java HotSpot(TM) 64-Bit Server VM (25.91-b14) for windows-amd64 JRE (1.8.0_91-b14), built on Apr  1 2016 00:58:32 by "java_re" with MS VC++ 10.0 (VS2010)
+Memory: 4k page, physical 8266332k(3336640k free), swap 16532664k(9654484k free)
+CommandLine flags: -XX:-BytecodeVerificationLocal -XX:-BytecodeVerificationRemote -XX:InitialHeapSize=52428800 -XX:+ManagementServer -XX:MaxHeapSize=52428800 -XX:MaxNewSize=17477632 -XX:MaxTenuringThreshold=6 -XX:OldPLABSize=16 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:TieredStopAtLevel=1 -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:-UseLargePagesIndividualAllocation -XX:+UseParNewGC 
+2021-04-15T21:04:10.842+0800: 2.650: [GC (Allocation Failure) 2021-04-15T21:04:10.842+0800: 2.650: [ParNew: 13696K->1664K(15360K), 0.0128738 secs] 13696K->2445K(49536K), 0.0131776 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+
+# 1、初始标记
+2021-04-15T21:04:22.827+0800: 14.635: [GC (CMS Initial Mark) [1 CMS-initial-mark: 7035K(34176K)] 8820K(49536K), 0.0007531 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+# 2、并发标记
+2021-04-15T21:04:22.827+0800: 14.636: [CMS-concurrent-mark-start]
+2021-04-15T21:04:22.847+0800: 14.655: [CMS-concurrent-mark: 0.019/0.019 secs] [Times: user=0.06 sys=0.03, real=0.02 secs]
+# 3、并发预清理 -> (4、并发可中止清理)
+2021-04-15T21:04:22.847+0800: 14.655: [CMS-concurrent-preclean-start]
+2021-04-15T21:04:22.848+0800: 14.656: [CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+# 5、重新标记
+2021-04-15T21:04:22.848+0800: 14.656: [GC (CMS Final Remark) [YG occupancy: 2776 K (15360 K)]2021-04-15T21:04:22.848+0800: 14.656: [Rescan (parallel) , 0.0009519 secs]2021-04-15T21:04:22.849+0800: 14.657: [weak refs processing, 0.0000363 secs]2021-04-15T21:04:22.849+0800: 14.657: [class unloading, 0.0032038 secs]2021-04-15T21:04:22.853+0800: 14.660: [scrub symbol table, 0.0038571 secs]2021-04-15T21:04:22.856+0800: 14.664: [scrub string table, 0.0003238 secs][1 CMS-remark: 7035K(34176K)] 9811K(49536K), 0.0087240 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+# 6、并发清除
+2021-04-15T21:04:22.857+0800: 14.665: [CMS-concurrent-sweep-start]
+2021-04-15T21:04:22.860+0800: 14.668: [CMS-concurrent-sweep: 0.003/0.003 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+# 7、并发重置
+2021-04-15T21:04:22.860+0800: 14.668: [CMS-concurrent-reset-start]
+2021-04-15T21:04:22.860+0800: 14.668: [CMS-concurrent-reset: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+
+# 1、初始标记
+2021-04-15T21:04:27.076+0800: 18.884: [GC (CMS Initial Mark) [1 CMS-initial-mark: 21029K(34176K)] 22587K(49536K), 0.0011465 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+# 2、并发标记
+2021-04-15T21:04:27.077+0800: 18.885: [CMS-concurrent-mark-start]
+2021-04-15T21:04:27.113+0800: 18.921: [CMS-concurrent-mark: 0.036/0.036 secs] [Times: user=0.08 sys=0.01, real=0.04 secs]
+# 3、并发预清理
+2021-04-15T21:04:27.114+0800: 18.922: [CMS-concurrent-preclean-start]
+2021-04-15T21:04:27.115+0800: 18.923: [CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+# 4、并发可中止清理
+2021-04-15T21:04:27.115+0800: 18.923: [CMS-concurrent-abortable-preclean-start]
+2021-04-15T21:04:27.282+0800: 19.090: [GC (Allocation Failure) 2021-04-15T21:04:27.282+0800: 19.090: [ParNew: 14979K->1443K(15360K), 0.0043541 secs] 36009K->22692K(49536K), 0.0044774 secs] [Times: user=0.06 sys=0.00, real=0.00 secs] 
+2021-04-15T21:04:27.418+0800: 19.226: [CMS-concurrent-abortable-preclean: 0.050/0.303 secs] [Times: user=0.47 sys=0.00, real=0.30 secs]
+# 5、重新标记
+2021-04-15T21:04:27.418+0800: 19.226: [GC (CMS Final Remark) [YG occupancy: 8840 K (15360 K)]2021-04-15T21:04:27.418+0800: 19.226: [Rescan (parallel) , 0.0028890 secs]2021-04-15T21:04:27.421+0800: 19.229: [weak refs processing, 0.0000623 secs]2021-04-15T21:04:27.421+0800: 19.229: [class unloading, 0.0035473 secs]2021-04-15T21:04:27.425+0800: 19.233: [scrub symbol table, 0.0088034 secs]2021-04-15T21:04:27.434+0800: 19.242: [scrub string table, 0.0005316 secs][1 CMS-remark: 21248K(34176K)] 30088K(49536K), 0.0162688 secs] [Times: user=0.01 sys=0.00, real=0.02 secs]
+# 6、并发清除
+2021-04-15T21:04:27.435+0800: 19.243: [CMS-concurrent-sweep-start]
+2021-04-15T21:04:27.447+0800: 19.255: [CMS-concurrent-sweep: 0.012/0.012 secs] [Times: user=0.03 sys=0.00, real=0.01 secs]
+# 7、并发重置
+2021-04-15T21:04:27.447+0800: 19.255: [CMS-concurrent-reset-start]
+2021-04-15T21:04:27.447+0800: 19.255: [CMS-concurrent-reset: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]

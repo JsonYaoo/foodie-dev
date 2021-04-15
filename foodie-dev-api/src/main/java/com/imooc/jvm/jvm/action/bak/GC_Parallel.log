@@ -1,0 +1,9 @@
+# Serial GC收集器日志分析: -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+UseParallelGC -Xmx50m -Xloggc:./GC_Parallel.log
+# 结论: => 日志格式基本与GC_Serial.log一致
+Java HotSpot(TM) 64-Bit Server VM (25.91-b14) for windows-amd64 JRE (1.8.0_91-b14), built on Apr  1 2016 00:58:32 by "java_re" with MS VC++ 10.0 (VS2010)
+Memory: 4k page, physical 8266332k(3139368k free), swap 16532664k(9870300k free)
+CommandLine flags: -XX:-BytecodeVerificationLocal -XX:-BytecodeVerificationRemote -XX:InitialHeapSize=52428800 -XX:+ManagementServer -XX:MaxHeapSize=52428800 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:TieredStopAtLevel=1 -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:-UseLargePagesIndividualAllocation -XX:+UseParallelGC 
+2021-04-15T21:01:32.403+0800: 2.370: [GC (Allocation Failure) [PSYoungGen: 12800K->2045K(14848K)] 12800K->2449K(49152K), 0.0063868 secs] [Times: user=0.03 sys=0.00, real=0.01 secs] 
+2021-04-15T21:01:35.158+0800: 5.125: [GC (Metadata GC Threshold) [PSYoungGen: 1649K->192K(12800K)] 11167K->10195K(47104K), 0.0017131 secs] [Times: user=0.06 sys=0.00, real=0.00 secs]
+2021-04-15T21:01:35.160+0800: 5.126: [Full GC (Metadata GC Threshold) [PSYoungGen: 192K->0K(12800K)] [ParOldGen: 10003K->7078K(23552K)] 10195K->7078K(36352K), [Metaspace: 20541K->20540K(1067008K)], 0.0556642 secs] [Times: user=0.13 sys=0.00, real=0.05 secs] 
+2021-04-15T21:01:55.435+0800: 25.403: [Full GC (Ergonomics) [PSYoungGen: 8704K->0K(12800K)] [ParOldGen: 34204K->34244K(34304K)] 42908K->34244K(47104K), [Metaspace: 56251K->56251K(1101824K)], 0.3997609 secs] [Times: user=0.66 sys=0.02, real=0.40 secs]

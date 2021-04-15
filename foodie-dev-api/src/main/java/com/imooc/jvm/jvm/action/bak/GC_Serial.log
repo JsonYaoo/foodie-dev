@@ -1,0 +1,59 @@
+# Serial GC收集器日志分析: -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+UseSerialGC -Xmx50m -Xloggc:./gc_analysis.log
+# JDK相关信息
+Java HotSpot(TM) 64-Bit Server VM (25.91-b14) for windows-amd64 JRE (1.8.0_91-b14), built on Apr  1 2016 00:58:32 by "java_re" with MS VC++ 10.0 (VS2010)
+
+# 内存相关信息
+Memory: 4k page, physical 8266332k(2973848k free), swap 16532664k(9866032k free)
+
+# 展示当前应用使用的JVM参数
+CommandLine flags:
+    -XX:-BytecodeVerificationLocal
+    -XX:-BytecodeVerificationRemote
+    -XX:InitialHeapSize=52428800
+    -XX:+ManagementServer
+    -XX:MaxHeapSize=52428800
+    -XX:+PrintGC
+    -XX:+PrintGCDateStamps
+    -XX:+PrintGCDetails
+    -XX:+PrintGCTimeStamps
+    -XX:TieredStopAtLevel=1
+    -XX:+UseCompressedClassPointers
+    -XX:+UseCompressedOops
+    -XX:-UseLargePagesIndividualAllocation
+    -XX:+UseSerialGC
+
+# 年轻代GC日志: 当前时间戳(PrintGCDateStamps):
+    2021-04-15T20:36:08.848+0800:
+# 相对时间戳(PrintGCTimeStamps):
+    3.708:
+# 造成GC的原因(PrintGCCause):...:
+    [GC (Allocation Failure) 2021-04-15T20:36:08.849+0800: 3.709:
+# 展示DefaultNew的回收前后的内存以及年轻代总内存大小(Serial DefNew)
+    [DefNew: 13696K->1663K(15360K),
+# GC (Allocation Failure) 到目前总共花费的时间
+    0.0099516 secs]
+# 展示回收前后整个堆内存以及堆内存总大小
+    13696K->2410K(49536K),
+# GC (Allocation Failure) 到目前总共花费的时间
+    0.0111863 secs]
+# 用户、系统、实际耗时
+    [Times: user=0.00 sys=0.00, real=0.01 secs]
+
+# FullGC日志: 当前时间戳(PrintGCDateStamps):
+    2021-04-15T20:36:20.608+0800:
+# 相对时间戳(PrintGCTimeStamps):
+    15.466:
+# 造成GC的原因(PrintGCCause):...:
+    [Full GC (Metadata GC Threshold) 2021-04-15T20:36:20.608+0800: 15.466:
+# 老年代回收之前和回收之后的内存大小以及老年代总内存大小
+    [Tenured: 5749K->6890K(34176K),
+# Full GC (Metadata GC Threshold) 到目前总共花费的时间
+    0.0256217 secs]
+# 展示回收前后整个堆内存以及堆内存总大小
+    13665K->6890K(49536K),
+# 元空间回收之前和回收之后的内存大小以及元空间总内存大小
+    [Metaspace: 20533K->20533K(1067008K)],
+# Full GC (Metadata GC Threshold) 到目前总共花费的时间
+    0.0257088 secs]
+# 用户、系统、实际耗时
+    [Times: user=0.01 sys=0.00, real=0.02 secs]
