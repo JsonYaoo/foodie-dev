@@ -1,0 +1,42 @@
+# 三种方式
+# 1、show @@rofiling
+select @@have_profiling;
+select @@profiling;
+set @@profiling=1;
+set profiling_history_size = 100;
+show profiles;
+select * from salaries;
+show profile for query 31;
+show profile memory for query 31;
+show profile all for query 31;
+set @@profiling=0;
+
+# 2、information_schema.profiling
+SELECT STATE, FORMAT(DURATION, 1) AS DURATION
+FROM INFORMATION_SCHEMA.PROFILING
+WHERE QUERY_ID = 83 ORDER BY SEQ;
+
+# 3、performance_schema
+# 查看是否开启
+select * from performance_schema.setup_actors;
+# 开启监控信息
+UPDATE performance_schema.setup_instruments
+SET ENABLED = 'YES', TIMED = 'YES'
+WHERE NAME LIKE '%statement/%';
+UPDATE performance_schema.setup_instruments
+SET ENABLED = 'YES', TIMED = 'YES'
+WHERE NAME LIKE '%stage/%';
+UPDATE performance_schema.setup_consumers
+SET ENABLED = 'YES'
+WHERE NAME LIKE '%events_statements_%';
+UPDATE performance_schema.setup_consumers
+SET ENABLED = 'YES'
+WHERE NAME LIKE '%events_stages_%';
+# 执行业务sql
+select * from salaries;
+# 获取event_id
+SELECT EVENT_ID, TRUNCATE(TIMER_WAIT/1000000000000,6) as Duration, SQL_TEXT
+FROM performance_schema.events_statements_history_long WHERE SQL_TEXT like '%salaries%';
+# 根据event_id获取监控信息
+SELECT event_name AS Stage, TRUNCATE(TIMER_WAIT/1000000000000,6) AS Duration
+FROM performance_schema.events_stages_history_long WHERE NESTING_EVENT_ID=3483;
