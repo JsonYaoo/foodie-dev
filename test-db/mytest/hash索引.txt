@@ -1,0 +1,14 @@
+# memory引擎创建hash索引
+create table test_hash_table (
+  name varchar(45) not null,
+  age tinyint(4) not null,
+  # 为name创建hash索引
+  key using hash(name)
+) engine = memory;
+
+# 查看innodb自适应hash索引开关(默认开启) => 不建议修改
+show variables like 'innodb_adaptive_hash_index';
+# 关闭
+set global innodb_adaptive_hash_index = 'OFF';
+# 开启
+set global innodb_adaptive_hash_index = 'ON';
