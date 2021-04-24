@@ -33,19 +33,19 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    // 使用作为Mybatis的数据源
-    @Bean
-    @Primary
-    public DataSource jsonYaoDataSource() {
-        return new JsonYaoDataSource();
-    }
-
-    @Bean
-    public DataSourceEndpoint dataSourceEndpoint() {
-        DataSource jsonYaoDataSource = this.jsonYaoDataSource();
-        return new DataSourceEndpoint((JsonYaoDataSource) jsonYaoDataSource);
-    }
-
+//    // 使用作为Mybatis的数据源
+//    @Bean
+//    @Primary
+//    public DataSource jsonYaoDataSource() {
+//        return new JsonYaoDataSource();
+//    }
+//
+//    @Bean
+//    public DataSourceEndpoint dataSourceEndpoint() {
+//        DataSource jsonYaoDataSource = this.jsonYaoDataSource();
+//        return new DataSourceEndpoint((JsonYaoDataSource) jsonYaoDataSource);
+//    }
+//
     @Bean
     public AsyncRestTemplate asyncRestTemplate() {
         return new AsyncRestTemplate();

@@ -1,0 +1,4 @@
+GET http://localhost:8088/items/search?keywords=好吃蛋糕甜点蒸蛋糕&sort=c&page=1&pageSize=10
+Accept: application/json
+
+###

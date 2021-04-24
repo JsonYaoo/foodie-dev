@@ -4,10 +4,14 @@ server:
 spring:
   datasource:
     # 集群时一定要写内网IP
-    url: jdbc:mysql://localhost:3306/foodie_shop_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+#    url: jdbc:mysql://localhost:3306/foodie_shop_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
 #    url: jdbc:mysql://192.168.1.141:8066/foodie_shop_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
 #    password: 123456
-    password: root
+#    password: root
+    # Mysql调优实战测试
+    url: jdbc:mysql://192.168.1.143:3306/foodie_shop_dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+    username: imooc
+    password: Imooc@123456
   redis:
     # Redis单机单实例
     database: 0
