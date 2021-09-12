@@ -186,7 +186,7 @@ show variables like '%slow%';
 set global slow_query_log=on;
 -- 查看慢查询日志的输出类型
 show variables like 'log_output';
--- 设置慢查询日志记录阈值
+-- 设置慢查询日志记录阈值, 0.2表示200ms
 show variables like '%long_query_time%';
 set long_query_time = 0.2;
 
@@ -253,7 +253,7 @@ order by i.item_name asc
 LIMIT 10;
 
 -- 问题5: order by字段是动态变化的, 优化前366 ms
--- 优化5：调大sort_buffer_size -> 382 ms, 作用不大(亲测), 依然是Using filesort
+-- 优化5：子查询中间表, 不能加索引, 所以需要调大sort_buffer_size -> 382 ms, 作用不大(亲测), 依然是Using filesort
 set sort_buffer_size = 4 * 1024 * 1024;
 explain
 SELECT i.id                    as itemId,
@@ -277,6 +277,7 @@ LIMIT 10;
 
 -- 问题6: items表使用临时表, 使用了文件排序 => 不改sql很难优化了
 -- 6、终极优化方案：反模式设计，引入冗余，把商品的最低优惠价（MIN(price_discount)）冗余到items表
+-- 这样tempSpec子查询不需要了, price_discount排序也可以走上索引
 
 -- ====================================================================================================================
 -- 激进优化方案测试(不要滥用, 要看业务是否需要)

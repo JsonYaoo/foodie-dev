@@ -338,10 +338,12 @@ where QUERY like '%Bader%';
       } /* join_optimization */
     },
     {
+      -- 3. 执行阶段的执行过程
       "join_execution": {
         "select#": 1,
         "steps": [
           {
+            -- 排序后特有的内容
             "sorting_table": "employees",
             "filesort_information": [
               {
@@ -355,6 +357,7 @@ where QUERY like '%Bader%';
             } /* filesort_priority_queue_optimization */,
             "filesort_execution": [
             ] /* filesort_execution */,
+            -- 重点关注 filesort_summary
             "filesort_summary": {
               -- 可用内存, 其实就是sort_buffer_size => 默认256k
               "memory_available": 262144,
@@ -362,14 +365,14 @@ where QUERY like '%Bader%';
               "row_size": 401,
               "max_rows_per_buffer": 503,
               "num_rows_estimate": 45208,
-              -- 参与排序排序的行数
+              -- 本次排序一共参与排序的行数
               "num_rows_found": 22287,
-              -- 产生了几个临时文件, 0则代表是完全基于内存排序
+              -- 本次排序产生了几个临时文件, 0则代表是完全基于内存排序
               "num_initial_chunks_spilled_to_disk": 0,
               "peak_memory_used": 205727,
               "sort_algorithm": "std::sort",
               "unpacked_addon_fields": "using_priority_queue",
-              -- 排序模式: 这里全字段排序 => rowId、additional_fields、packed_additional_fields
+              -- 使用的排序模式: 这里全字段排序 => rowid、additional_fields、packed_additional_fields
               "sort_mode": "<varlen_sort_key, additional_fields>"
             } /* filesort_summary */
           }

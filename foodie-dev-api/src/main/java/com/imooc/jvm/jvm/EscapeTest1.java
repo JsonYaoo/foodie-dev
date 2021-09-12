@@ -31,7 +31,7 @@ class EscapeTest1 {
         someTest.age = 1;
         someTest.id = 1;
 
-        // 开启标量替换之后, 上述代码会被优化成:
+        // 开启标量替换之后, 上述代码会被优化成: 并不会创建SomeTest对象
         int age = 1;
         int id = 1;
     }
